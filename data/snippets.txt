@@ -1,0 +1,118 @@
+{ 
+	"snippetGroups":[
+		{	"codeType":"Debug",
+			"description":"Debugging functions",
+			"snippets":["Logger"]
+		},
+		{
+			"codeType":"General",
+			"description":"General devices",
+			"snippets":["Blinker","Stepper"]
+		},
+		{
+			"codeType":"Devices",
+			"description":"Devices",
+			"snippets":["OneWireTemp"]
+		}
+	],
+	"snippets":{
+		"Blinker":{
+			"description":"LED Blinker",
+			"code":[
+				"function Blinker(pin,frequency){",
+				"    var status = true, duration = 1000 / frequency, interval;",
+				"    interval = setInterval(function(){",
+      			"        status =! status;",
+      			"        pin.write(status);",
+    			"    },duration);",
+				"    this.stop=function(){",
+      			"        pin.write(false);",
+      			"        clearInterval(interval);",
+    			"    };",
+				"}",
+				"var bl=new Blinker(LED1,2);"
+			]
+		},
+		"Stepper":{
+			"description":"Start Stepper Motor",
+			"code":[
+				"function stepper(pins,frequency,step4,forward){",
+  				"    var step,steps,duration,interval,direction;",
+  				"    step = 0;",
+  				"    if(step4){ steps = [0x01,0x02,0x04,0x08];}",
+  				"    else{ steps = [0x01,0x03,0x02,0x06,0x04,0x0c,0x08,0x09];}",
+  				"    duration = 1000 / frequency;",
+  				"    direction = forward;",
+  				"    function doStep(){",
+    			"        if(direction) {step++; step = (step % steps.length);}",
+    			"        else{ step--; if(step < 0){ step = steps.length - 1;}}",
+    			"        digitalWrite(pins, steps[step]);",
+  				"    }",
+  				"    this.start = function(){interval = setInterval(function(){doStep();},duration);};",
+  				"    this.stop = function(){clearInterval(interval);};",
+  				"    this.changeDirection = function(forward){",
+    			"        this.stop();",
+    			"        direction = forward;",
+    			"        this.start();",
+  				"    };",
+  			    "    this.start();",
+				"}",
+				"var st = new stepper([E9,E10,E11,E12],100,true,true);"
+			]
+		},
+		"OneWireTemp":{
+			"description":"Measure Temp DS18n20",
+			"code":[
+				"function OneWireTemp(pin){",
+				"  var ow,reg = [];",
+				"  ow = new OneWire(pin);",
+				"  ow.device = ow.search()[0];",
+				"  this.device = ow.device - ((ow.device >> 8) << 8);",
+				"  this.ow = ow;",
+				"  this.readRegister = function(n){",
+				"    var reg = [];",
+				"    if(!n)n = 8;",
+				"    ow.reset();",
+				"    ow.select(ow.device);",
+				"    ow.write(0x44,true);",
+				"    ow.reset();",
+				"    ow.select(ow.device);",
+				"    ow.write(0xBE);",
+				"    for(var i = 0; i < n; i++){reg.push(ow.read());}",
+				"    return reg;",
+				"  };",
+				"  this.getTemp = function(){",
+				"    var t,reg;",
+				"    reg = this.readRegister(2);",
+				"    t = reg[0] + (reg[1] << 8); if(t > 32767) t -= 65536;",
+				"    switch(this.device){",
+				"      case 40: t = t / 16; break;//ds18B20",
+				"      case 16: t = t / 2; break;//ds18S20",
+				"    }",
+				"    return t;",
+				"  };",
+				"}",
+				"console.log(t.getTemp());"
+			]
+		},
+		"Logger":{
+			"description":"simple logging",
+			"code":[
+				"function logger(val,type){",
+  				"    var log = \"\";",
+  				"    if(val.length){",
+    			"        for(var i = 0; i < val.length; i++){",
+      			"            if(log.length > 0){ log += \" , \";}",
+      			"            log += val[i];",
+      			"            if(type) log += \"(\" + (typeof val[i]) + \")\";",
+    			"        }",
+  				"    }",
+  				"    console.log(log);",
+				"}",
+				"logger([1,4,\"emil\"],false);"
+			]
+		}
+
+	}
+
+}

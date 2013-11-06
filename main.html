@@ -4,17 +4,51 @@
   <meta charset="utf-8" />
 
   <link href="css/ui-lightness/jquery-ui-1.10.1.custom.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/codemirror.css">
+  <link rel="stylesheet" href="js/codemirror/css/codemirror.css">
   <link href="css/main.css" rel="stylesheet" media="all"></link>
+  <link rel="stylesheet" href="js/codemirror/addon/lint/lint.css">
+  <link rel="stylesheet" href="js/codemirror/addon/hint/show-hint.css">
+  <link rel="stylesheet" href="js/codemirror/addon/fold/foldgutter.css" />
 
   <script src="js/jquery-1.9.1.js"></script>
   <script src="js/jquery-ui-1.10.1.custom.js"></script>
   <script type="text/javascript" src="js/jquery.layout-1.3.0.js"></script>
-  <script src="js/codemirror.js" type="text/javascript"></script>
-  <script src="js/codemirror-javascript.js"></script>
+  <script src="js/codemirror/codemirror.js" type="text/javascript"></script>
+  <script src="js/codemirror/codemirror-javascript.js"></script>
+<!-- added by Juergen -->
+        <script src="js/codemirror/addon/hint/show-hint.js"></script>
+        <script src="js/codemirror/addon/hint/javascript-hint.js"></script>
+        <script src="js/codemirror/addon/fold/foldcode.js"></script>
+        <script src="js/codemirror/addon/fold/foldgutter.js"></script>
+        <script src="js/codemirror/addon/fold/brace-fold.js"></script>
+        <script src="js/codemirror/addon/fold/comment-fold.js"></script>
+        <script src="js/codemirror/addon/edit/closebrackets.js"></script>
+        <script src="js/codemirror/addon/search/searchcursor.js"></script>
+        <script src="js/codemirror/addon/search/match-highlighter.js"></script>
+        <script src="js/codemirror/addon/jshint/jshint.js"></script>
+        <script src="js/codemirror/addon/lint/lint.js"></script>
+        <script src="js/codemirror/addon/lint/javascript-lint.js"></script>
+        <script src="js/codemirror/addon/edit/trailingspace.js"></script>
+        <script src="js/JUM_Espruino.js"></script>
+<!-- end of added by Juergen -->
 
   <!-- for file save -->
   <script type="text/javascript" src="js/FileSaver.min.js"></script>
+        <style type="text/css">
+            .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+            .lint-error {font-family: arial; font-size: 70%; background: #ffa; color: #a00; padding: 2px 5px 3px; }
+            .lint-error-icon {color: white; background-color: red; font-weight: bold; border-radius: 50%; padding: 0 3px; margin-right: 7px;}
+            .cm-trailingspace {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+                background-position: bottom left;
+                background-repeat: repeat-x;
+            }
+            .CodeMirror-focused .cm-matchhighlight {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+                background-position: bottom;
+                background-repeat: repeat-x;
+            }
+        </style>
 
   <title>Espruino Serial Terminal</title>
 </head>
@@ -22,12 +56,37 @@
 
   <div class="ui-layout-east">
      <div id="codetoolbar" class="toolbar ui-widget-header">
-          <button class="send">Send to Espruino</button>
-          <button class="blockly">Switch between Code and Graphical Designer</button>
-          <button class="load">Load File</button> 
-          <button class="save">Save File</button>
-          <input type="file" id="fileLoader" style="display: none;"/> <!-- for file loading -->
-    </div>
+        <button class="send">Send to Espruino</button>
+        <button class="blockly">Switch between Code and Graphical Designer</button>
+        <button class="load">Load File</button> 
+        <button class="save">Save File</button>
+        <input type="file" id="fileLoader" style="display: none;"/> <!-- for file loading -->
+<!-- added by Juergen -->
+        <button class="document">Scripts</button>
+        <button class="comment">Tutorials</button>
+        <button class="script">Snippets</button>
+        <button class="minify">Minify</button>
+        <div id="divScripts" style="display: none;">
+            replace<input type="checkbox" name="replaceInEditor">
+            <span id="scriptList" ></span>
+        </div>
+        <div style="display: none;" id="divMinify">
+            Send to Espruino<input name="sendMinify" id="sendMinify" type="checkbox">
+            <select id="minifyLevel">
+              <option value="WHITESPACE_ONLY">WHITESPACE_ONLY</option>
+              <option value="SIMPLE_OPTIMIZATIONS">SIMPLE_OPTIMIZATIONS</option>
+              <option value="ADVANCED_OPTIMIZATIONS">ADVANCED_OPTIMIZATIONS</option>
+            </select>
+            <input type="button" id="minifyButton" value="call Minify">
+          <form id="callMinify" method="POST" action="http://closure-compiler.appspot.com/compile" target="_blank">
+            <input type="hidden" id="compilation_level" name="compilation_level" value="WHITESPACE_ONLY">
+            <input type="hidden" name="output_format" value="text">
+            <input type="hidden" name="output_info" value="compiled_code">
+            <input type="hidden" id="js_code" name="js_code">
+          </form>
+        </div>
+      </div>
+<!-- end of added by Juergen -->
     <div id="divcode">
     <textarea id="code" name="code">
 clearInterval();
@@ -40,7 +99,6 @@ setInterval(function() {
     </div>
     <iframe id="divblockly" style="display:none;border:none;" src="blockly/blockly.html"></iframe>
   </div>
-
   <div class="ui-layout-center">
     <div id="terminaltoolbar" class="toolbar ui-widget-header">
           <select class="serial_devices"></select>

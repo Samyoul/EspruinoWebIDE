@@ -137,11 +137,18 @@ Author: Gordon Williams (gw@pur3.co.uk)
     } });
     myLayout.sizePane("east", $(window).width()/2);
     // The code editor
+<!-- new options added by Juergen -->
     codeEditor = CodeMirror.fromTextArea(document.getElementById("code"), {
-      lineNumbers: true,
-      matchBrackets: true,
-      mode: "text/typescript"
+      lineNumbers: true,matchBrackets: true,mode: "text/typescript",
+      lineWrapping: true,
+      showTrailingSpace: true,lint:true,
+      highlightSelectionMatches: {showToken: /\w/},
+      foldGutter: {rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.brace, CodeMirror.fold.comment)},
+      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+      extraKeys: {"Ctrl-Space": "autocomplete"}
     });
+<!-- initialization added by Juergen (see JUM_Espruino) -->
+    initCodeMirrorAddons(codeEditor);
 
     // terminal toolbar
     $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
@@ -190,7 +197,8 @@ Author: Gordon Williams (gw@pur3.co.uk)
         saveFile(codeEditor.getValue(), "code.js");
     });
     $("#terminal").css("top",  $("#terminaltoolbar").outerHeight()+"px");
-
+<!-- init additional buttons added by Juergen -->
+    initButtons(codeEditor);
     flipState(true);
     
     $("#terminal").mouseup(function() {
