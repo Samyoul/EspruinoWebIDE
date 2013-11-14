@@ -30,6 +30,10 @@
  *
  * JSHint was forked from 2010-12-16 edition of JSLint.
  *
+ * ------------------------------------------------------------------------------------------
+ * This version has been modified by Gordon Williams (gw@pur3.co.uk) to allow binary numbers
+ * ------------------------------------------------------------------------------------------
+ *
  */
 
 /*
@@ -782,7 +786,7 @@ var JSHINT = (function () {
         };
 
     // Regular expressions. Some of these are stupidly long.
-    var ax, cx, tx, nx, nxg, lx, ix, jx, ft;
+    var ax, cx, tx, binaryNumber, nx, nxg, lx, ix, jx, ft;
     (function () {
         /*jshint maxlen:300 */
 
@@ -793,7 +797,10 @@ var JSHINT = (function () {
         cx = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/;
 
         // token
-        tx = /^\s*([(){}\[.,:;'"~\?\]#@]|==?=?|\/(\*(jshint|jslint|members?|global)?|=|\/)?|\*[\/=]?|\+(?:=|\++)?|-(?:=|-+)?|%=?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=!]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([xX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/;
+        tx = /^\s*([(){}\[.,:;'"~\?\]#@]|==?=?|\/(\*(jshint|jslint|members?|global)?|=|\/)?|\*[\/=]?|\+(?:=|\++)?|-(?:=|-+)?|%=?|&[&=]?|\|[|=]?|>>?>?=?|<([\/=!]|\!(\[|--)?|<=?)?|\^=?|\!=?=?|[a-zA-Z_$][a-zA-Z0-9_$]*|[0-9]+([bxX][0-9a-fA-F]+|\.[0-9]*)?([eE][+\-]?[0-9]+)?)/;
+
+        // binary number
+        binaryNumber = /^0b[01]+$/;
 
         // characters in strings that need escapement
         nx = /[\u0000-\u001f&<"\/\\\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/;
@@ -1362,6 +1369,9 @@ unclosedString:     for (;;) {
     //      number
 
                         if (c.isDigit()) {
+                            if (binaryNumber.exec(t)) {
+                              t = parseInt(t.substr(2),2).toString();
+                            }
                             if (!isFinite(Number(t))) {
                                 warningAt("Bad number '{a}'.",
                                     line, character, t);
