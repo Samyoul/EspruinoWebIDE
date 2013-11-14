@@ -148,7 +148,8 @@ Author: Gordon Williams (gw@pur3.co.uk)
       extraKeys: {"Ctrl-Space": "autocomplete"}
     });
 <!-- initialization added by Juergen (see JUM_Espruino) -->
-    initCodeMirrorAddons(codeEditor);
+    //initCodeMirrorAddons(codeEditor);
+    
 
     // terminal toolbar
     $( ".refresh" ).button({ text: false, icons: { primary: "ui-icon-refresh" } }).click(refreshPorts);
@@ -198,7 +199,9 @@ Author: Gordon Williams (gw@pur3.co.uk)
     });
     $("#terminal").css("top",  $("#terminaltoolbar").outerHeight()+"px");
 <!-- init additional buttons added by Juergen -->
-    initButtons(codeEditor);
+    //initButtons(codeEditor);
+    Espruino.General.init(codeEditor);
+<!-- end of added by Juergen -->
     flipState(true);
     
     $("#terminal").mouseup(function() {

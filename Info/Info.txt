@@ -1,0 +1,9 @@
+<h3>Espruino Web IDE</h3>
+A serial Port Terminal Web App for Chrome<br>
+<br>
+This is designed for <a href="http://www.Espruino.com" target="_blank">Espruino</a>, the world's first JavaScript microcontroller <br>
+<ul><b>Credit goes to</b>
+<li><a href="www.google.com" target="_blank">Google</a> for supporting serial interface in Chrome</li>
+<li><a href="www.jquery.com" target="_blank">jQuery</a> for jQuery library and jQuery UI</li>
+<li><a href="www.CodeMirror.net" target="_blank">CodeMirror</a> for the Editor Toolset in Javascript</li>
+</ul> 

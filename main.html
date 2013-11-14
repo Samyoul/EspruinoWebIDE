@@ -29,7 +29,12 @@
         <script src="js/codemirror/addon/lint/lint.js"></script>
         <script src="js/codemirror/addon/lint/javascript-lint.js"></script>
         <script src="js/codemirror/addon/edit/trailingspace.js"></script>
-        <script src="js/JUM_Espruino.js"></script>
+        <script src="js/Espruino_General.js"></script>
+        <script src="js/Espruino_Script.js"></script>
+        <script src="js/Espruino_Tutorial.js"></script>
+        <script src="js/Espruino_Snippet.js"></script>
+        <script src="js/Espruino_Device.js"></script>
+        <script src="js/Espruino_Minify.js"></script>
 <!-- end of added by Juergen -->
 
   <!-- for file save -->
@@ -48,6 +53,7 @@
                 background-position: bottom;
                 background-repeat: repeat-x;
             }
+            .subform {background-color:#0F0;}
         </style>
 
   <title>Espruino Serial Terminal</title>
@@ -62,15 +68,22 @@
         <button class="save">Save File</button>
         <input type="file" id="fileLoader" style="display: none;"/> <!-- for file loading -->
 <!-- added by Juergen -->
-        <button class="document">Scripts</button>
-        <button class="comment">Tutorials</button>
-        <button class="script">Snippets</button>
-        <button class="minify">Minify</button>
-        <div id="divScripts" style="display: none;">
+        &nbsp;&nbsp;
+        <button class="scriptsButton">Scripts</button>
+        <button class="tutorialsButton">Tutorials</button>
+        <button class="snippetsButton">Snippets</button>
+        &nbsp;&nbsp;
+        <button class="minifyButton">Minify</button>
+        &nbsp;&nbsp;
+        <button class="devicesButton">Boards</button>
+        <button class="replacePins">Assign pins</button>
+        <button class="connectionList">Connection List</button>
+        <button class="infoButton" style="position:absolute;right:4px;">Info</button>
+        <div id="divScripts" class="subform" style="display: none;">
             replace<input type="checkbox" name="replaceInEditor">
             <span id="scriptList" ></span>
         </div>
-        <div style="display: none;" id="divMinify">
+        <div style="display: none;" id="divMinify" class="subform">
             Send to Espruino<input name="sendMinify" id="sendMinify" type="checkbox">
             <select id="minifyLevel">
               <option value="WHITESPACE_ONLY">WHITESPACE_ONLY</option>
@@ -85,6 +98,7 @@
             <input type="hidden" id="js_code" name="js_code">
           </form>
         </div>
+        <div style="display: none;" id="divBoards" class="subform"></div>
       </div>
 <!-- end of added by Juergen -->
     <div id="divcode">
@@ -106,6 +120,7 @@ setInterval(function() {
           <button class="open">Connect</button>
           <button class="close">Disconnect</button>
           <span id="status">Not Connected</span>
+          <span id="deviceTypes"></span>
           <button class="webcam" style="position:absolute;right:4px;">Webcam</button>
     </div>
     <video autoplay id="videotag"></video>  

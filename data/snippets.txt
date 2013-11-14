@@ -30,7 +30,7 @@
       			"        clearInterval(interval);",
     			"    };",
 				"}",
-				"var bl=new Blinker(LED1,2);"
+				"var bl=new Blinker(/*LED,pin*/ ,2);"
 			]
 		},
 		"Stepper":{
@@ -57,7 +57,7 @@
   				"    };",
   			    "    this.start();",
 				"}",
-				"var st = new stepper([E9,E10,E11,E12],100,true,true);"
+				"var st = new stepper([/*PWM,CH*/E9,/*PWM,CH*/E10,/*PWM,CH*/E11,/*PWM,CH*/E12],100,true,true);"
 			]
 		},
 		"OneWireTemp":{
@@ -92,6 +92,7 @@
 				"    return t;",
 				"  };",
 				"}",
+				"var t = new OneWireTemp(/*USART,RX*/ );",
 				"console.log(t.getTemp());"
 			]
 		},
@@ -114,5 +115,4 @@
 		}
 
 	}
-
 }
